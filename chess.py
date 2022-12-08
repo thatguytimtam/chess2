@@ -59,12 +59,7 @@ def drawBoard(color1, color2):
     for j in range(1, 8):
         pg.draw.line(win, (0,0,0), (0, 75*j), (600, 75*j), width=3)
 
-kings = []
-queens = []
-rooks = []
-bishops = []
-knights = []
-pawns = []
+kings, queens, rooks, bishops, knights, pawns = [],[],[],[],[],[]
 
 selected_piece = None
 
@@ -87,45 +82,45 @@ def drawPieces():
     for king in kings:
         king.update()
 
-    # QUEEN 
+    # PAWN
     for i in boardSearch(2):
-        wQueen = Piece((i % 8)*75, (i // 8)*75,'queen', 0, wQueen_surf)
-        queens.append(wQueen)
-    
-    for queen in queens:
-        queen.update()
+        wQueen = Piece((i % 8)*75, (i // 8)*75,'Queen', 0, wQueen_surf)
+        queens.append([wQueen.sprite.get_rect(center = (wQueen.x + 75/2, wQueen.y + 75/2)), (chessBoard[(wQueen.x//75)+(wQueen.y//75)*8])])
+
+    for Queen in queens:
+        win.blit(wQueen_surf, Queen[0])
     
     # ROOK
     for i in boardSearch(3):
-        wRook = Piece((i % 8)*75, (i // 8)*75,'rook', 0, wRook_surf)
-        rooks.append(wRook)
-    
+        wRook = Piece((i % 8)*75, (i // 8)*75,'Rook', 0, wRook_surf)
+        rooks.append([wRook.sprite.get_rect(center = (wRook.x + 75/2, wRook.y + 75/2)), (chessBoard[(wRook.x//75)+(wRook.y//75)*8])])
+
     for rook in rooks:
-        rook.update()
+        win.blit(wRook_surf, rook[0])
 
     # BISHOP
     for i in boardSearch(4):
         wBishop = Piece((i % 8)*75, (i // 8)*75,'bishop', 0, wBishop_surf)
-        bishops.append(wBishop)
-    
+        bishops.append([wBishop.sprite.get_rect(center = (wBishop.x + 75/2, wBishop.y + 75/2)), (chessBoard[(wBishop.x//75)+(wBishop.y//75)*8])])
+
     for bishop in bishops:
-        bishop.update()
+        win.blit(wBishop_surf, bishop[0])
 
     # KNIGHT
     for i in boardSearch(5):
         wKnight = Piece((i % 8)*75, (i // 8)*75,'knight', 0, wKnight_surf)
-        knights.append(wKnight)
-    
+        knights.append([wKnight.sprite.get_rect(center = (wKnight.x + 75/2, wKnight.y + 75/2)), (chessBoard[(wKnight.x//75)+(wKnight.y//75)*8])])
+
     for knight in knights:
-        knight.update()
+        win.blit(wKnight_surf, knight[0])
 
     # PAWN
     for i in boardSearch(6):
         wPawn = Piece((i % 8)*75, (i // 8)*75,'pawn', 0, wPawn_surf)
-        pawns.append(wPawn)
+        pawns.append([wPawn.sprite.get_rect(center = (wPawn.x + 75/2, wPawn.y + 75/2)), (chessBoard[(wPawn.x//75)+(wPawn.y//75)*8])])
 
     for pawn in pawns:
-        pawn.update()
+        win.blit(wPawn_surf, pawn[0])
 
 
 while True:
@@ -138,14 +133,42 @@ while True:
         if event.type == pg.MOUSEBUTTONUP and selected_piece == None:
             if chessBoard[mx+my*8] != 0:
                 selected_piece = chessBoard[mx+my*8]
-            old_piece = chessBoard[mx+my*8]
+                old_piece = selected_piece
+
         elif event.type == pg.MOUSEBUTTONUP and selected_piece != None:
-            #pawns.remove(old_piece)
-            chessBoard[old_piece] = 0
+            print(queens)
+            
+            if floor(selected_piece) == 6:
+                for p in pawns:
+                    if p[1] == selected_piece:
+                        pawns.pop(pawns.index(p))
+
+            elif floor(selected_piece) == 5:
+                for p in knights:
+                    if p[1] == selected_piece:
+                        knights.pop(knights.index(p))
+
+            elif floor(selected_piece) == 4:
+                for p in bishops:
+                    if p[1] == selected_piece:
+                        bishops.pop(bishops.index(p))
+
+            elif floor(selected_piece) == 3:
+                for p in rooks:
+                    if p[1] == selected_piece:
+                        rooks.pop(rooks.index(p))
+
+            elif floor(selected_piece) == 2:
+                for p in queens:
+                    if p[1] == selected_piece:
+                        queens.pop(queens.index(p))
+
+            chessBoard[chessBoard.index(old_piece)] = 0
             chessBoard[mx+my*8] = selected_piece
 
             selected_piece = None
             old_piece = None
+
 
 
 
